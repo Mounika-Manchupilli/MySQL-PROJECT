@@ -1,0 +1,342 @@
+mysql> create database college;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> use college;
+Database changed
+mysql> CREATE TABLE Department (
+    ->     dept_id INT PRIMARY KEY,
+    ->     dept_name VARCHAR(50),
+    ->     hod_name VARCHAR(50)
+    -> );
+Query OK, 0 rows affected (0.15 sec)
+
+mysql> CREATE TABLE Student (
+    ->     student_id INT PRIMARY KEY,
+    ->     student_name VARCHAR(50),
+    ->     gender VARCHAR(10),
+    ->     dob DATE,
+    ->     phone VARCHAR(15),
+    ->     email VARCHAR(50),
+    ->     dept_id INT,
+    ->     FOREIGN KEY (dept_id) REFERENCES Department(dept_id)
+    -> );
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> CREATE TABLE Faculty (
+    ->     faculty_id INT PRIMARY KEY,
+    ->     faculty_name VARCHAR(50),
+    ->     qualification VARCHAR(50),
+    ->     phone VARCHAR(15),
+    ->     dept_id INT,
+    ->     FOREIGN KEY (dept_id) REFERENCES Department(dept_id)
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> CREATE TABLE Course (
+    ->     course_id INT PRIMARY KEY,
+    ->     course_name VARCHAR(50),
+    ->     credits INT,
+    ->     faculty_id INT,
+    ->     dept_id INT,
+    ->     FOREIGN KEY (faculty_id) REFERENCES Faculty(faculty_id),
+    ->     FOREIGN KEY (dept_id) REFERENCES Department(dept_id)
+    -> );
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> CREATE TABLE Enrollment (
+    ->     enrollment_id INT PRIMARY KEY,
+    ->     student_id INT,
+    ->     course_id INT,
+    ->     semester INT,
+    ->     FOREIGN KEY (student_id) REFERENCES Student(student_id),
+    ->     FOREIGN KEY (course_id) REFERENCES Course(course_id)
+    -> );
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> CREATE TABLE Attendance (
+    ->     attendance_id INT PRIMARY KEY,
+    ->     student_id INT,
+    ->     course_id INT,
+    ->     attendance_percent DECIMAL(5,2),
+    ->     FOREIGN KEY (student_id) REFERENCES Student(student_id),
+    ->     FOREIGN KEY (course_id) REFERENCES Course(course_id)
+    -> );
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> CREATE TABLE Exam (
+    ->     exam_id INT PRIMARY KEY,
+    ->     course_id INT,
+    ->     exam_name VARCHAR(50),
+    ->     exam_date DATE,
+    ->     FOREIGN KEY (course_id) REFERENCES Course(course_id)
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> CREATE TABLE Result (
+    ->     result_id INT PRIMARY KEY,
+    ->     student_id INT,
+    ->     exam_id INT,
+    ->     marks INT,
+    ->     grade VARCHAR(2),
+    ->     FOREIGN KEY (student_id) REFERENCES Student(student_id),
+    ->     FOREIGN KEY (exam_id) REFERENCES Exam(exam_id)
+    -> );
+Query OK, 0 rows affected (0.10 sec)
+mysql> INSERT INTO Department (dept_id, dept_name, hod_name) VALUES
+    -> (101, 'Computer Science', 'Dr. Ravi Kumar'),
+    -> (102, 'Information Technology', 'Dr. Anitha Rao'),
+    -> (103, 'Electronics', 'Dr. Suresh Babu'),
+    -> (104, 'Mechanical', 'Dr. Lakshmi Devi');
+Query OK, 4 rows affected (0.04 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Student (student_id, student_name, gender, dob, phone, email, dept_id) VALUES
+    -> (1, 'Rahul', 'Male', '2004-05-10', '9876543210', 'rahul@gmail.com', 101),
+    -> (2, 'Sneha', 'Female', '2004-08-15', '9876543211', 'sneha@gmail.com', 102),
+    -> (3, 'Kiran', 'Male', '2003-12-20', '9876543212', 'kiran@gmail.com', 101),
+    -> (4, 'Priya', 'Female', '2004-02-18', '9876543213', 'priya@gmail.com', 103),
+    -> (5, 'Arjun', 'Male', '2003-11-30', '9876543214', 'arjun@gmail.com', 104);
+Query OK, 5 rows affected (0.02 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Faculty (faculty_id, faculty_name, qualification, phone, dept_id) VALUES
+    -> (201, 'Dr. Ramesh', 'PhD', '9123456780', 101),
+    -> (202, 'Dr. Kavitha', 'PhD', '9123456781', 102),
+    -> (203, 'Dr. Mahesh', 'M.Tech', '9123456782', 103),
+    -> (204, 'Dr. Swathi', 'PhD', '9123456783', 104);
+Query OK, 4 rows affected (0.02 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Course (course_id, course_name, credits, faculty_id, dept_id) VALUES
+    -> (301, 'Database Management System', 4, 201, 101),
+    -> (302, 'Python Programming', 3, 201, 101),
+    -> (303, 'Computer Networks', 4, 202, 102),
+    -> (304, 'Digital Electronics', 4, 203, 103),
+    -> (305, 'Thermodynamics', 3, 204, 104);
+Query OK, 5 rows affected (0.02 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Enrollment (enrollment_id, student_id, course_id, semester) VALUES
+    -> (401, 1, 301, 4),
+    -> (402, 1, 302, 4),
+    -> (403, 2, 303, 4),
+    -> (404, 3, 301, 4),
+    -> (405, 3, 302, 4),
+    -> (406, 4, 304, 4),
+    -> (407, 5, 305, 4);
+Query OK, 7 rows affected (0.01 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Attendance (attendance_id, student_id, course_id, attendance_percent) VALUES
+    -> (501, 1, 301, 92.5),
+    -> (502, 1, 302, 88.0),
+    -> (503, 2, 303, 70.5),
+    -> (504, 3, 301, 95.0),
+    -> (505, 3, 302, 82.5),
+    -> (506, 4, 304, 76.0),
+    -> (507, 5, 305, 68.5);
+Query OK, 7 rows affected (0.02 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Exam (exam_id, course_id, exam_name, exam_date) VALUES
+    -> (601, 301, 'Mid-1', '2026-03-10'),
+    -> (602, 302, 'Mid-1', '2026-03-12'),
+    -> (603, 303, 'Mid-1', '2026-03-15'),
+    -> (604, 304, 'Mid-1', '2026-03-18'),
+    -> (605, 305, 'Mid-1', '2026-03-20');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Result (result_id, student_id, exam_id, marks, grade) VALUES
+    -> (701, 1, 601, 92, 'A'),
+    -> (702, 1, 602, 88, 'A'),
+    -> (703, 2, 603, 72, 'B'),
+    -> (704, 3, 601, 96, 'A'),
+    -> (705, 3, 602, 90, 'A'),
+    -> (706, 4, 604, 80, 'B'),
+    -> (707, 5, 605, 65, 'C');
+Query OK, 7 rows affected (0.01 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> -- EASY QUERIES
+mysql> -- 1.Display all students
+mysql> SELECT * FROM Student;
++------------+--------------+--------+------------+------------+-----------------+---------+
+| student_id | student_name | gender | dob        | phone      | email           | dept_id |
++------------+--------------+--------+------------+------------+-----------------+---------+
+|          1 | Rahul        | Male   | 2004-05-10 | 9876543210 | rahul@gmail.com |     101 |
+|          2 | Sneha        | Female | 2004-08-15 | 9876543211 | sneha@gmail.com |     102 |
+|          3 | Kiran        | Male   | 2003-12-20 | 9876543212 | kiran@gmail.com |     101 |
+|          4 | Priya        | Female | 2004-02-18 | 9876543213 | priya@gmail.com |     103 |
+|          5 | Arjun        | Male   | 2003-11-30 | 9876543214 | arjun@gmail.com |     104 |
++------------+--------------+--------+------------+------------+-----------------+---------+
+5 rows in set (0.01 sec)
+
+mysql> -- 2.Display all departments
+mysql> SELECT * FROM Department;
++---------+------------------------+------------------+
+| dept_id | dept_name              | hod_name         |
++---------+------------------------+------------------+
+|     101 | Computer Science       | Dr. Ravi Kumar   |
+|     102 | Information Technology | Dr. Anitha Rao   |
+|     103 | Electronics            | Dr. Suresh Babu  |
+|     104 | Mechanical             | Dr. Lakshmi Devi |
++---------+------------------------+------------------+
+4 rows in set (0.00 sec)
+
+mysql> -- 3. Find students from a particular department
+mysql> SELECT *
+    -> FROM Student
+    -> WHERE dept_id = 101;
++------------+--------------+--------+------------+------------+-----------------+---------+
+| student_id | student_name | gender | dob        | phone      | email           | dept_id |
++------------+--------------+--------+------------+------------+-----------------+---------+
+|          1 | Rahul        | Male   | 2004-05-10 | 9876543210 | rahul@gmail.com |     101 |
+|          3 | Kiran        | Male   | 2003-12-20 | 9876543212 | kiran@gmail.com |     101 |
++------------+--------------+--------+------------+------------+-----------------+---------+
+2 rows in set (0.02 sec)
+
+mysql> -- 4. Count total number of students
+mysql> SELECT COUNT(*) AS Total_Students
+    -> FROM Student;
++----------------+
+| Total_Students |
++----------------+
+|              5 |
++----------------+
+1 row in set (0.01 sec)
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+mysql> -- INTERMEDIATE QUERIES
+mysql> -- 1. Display student names with their department names
+mysql> SELECT s.student_name,
+    ->        d.dept_name
+    -> FROM Student s
+    -> JOIN Department d
+    -> ON s.dept_id = d.dept_id;
++--------------+------------------------+
+| student_name | dept_name              |
++--------------+------------------------+
+| Rahul        | Computer Science       |
+| Kiran        | Computer Science       |
+| Sneha        | Information Technology |
+| Priya        | Electronics            |
+| Arjun        | Mechanical             |
++--------------+------------------------+
+5 rows in set (0.01 sec)
+
+mysql> -- 2. Display courses with faculty names
+mysql> SELECT c.course_name,
+    ->        f.faculty_name
+    -> FROM Course c
+    -> JOIN Faculty f
+    -> ON c.faculty_id = f.faculty_id;
++----------------------------+--------------+
+| course_name                | faculty_name |
++----------------------------+--------------+
+| Database Management System | Dr. Ramesh   |
+| Python Programming         | Dr. Ramesh   |
+| Computer Networks          | Dr. Kavitha  |
+| Digital Electronics        | Dr. Mahesh   |
+| Thermodynamics             | Dr. Swathi   |
++----------------------------+--------------+
+5 rows in set (0.00 sec)
+
+mysql> -- 3. Display students with enrolled courses
+mysql> SELECT s.student_name,
+    ->        c.course_name
+    -> FROM Enrollment e
+    -> JOIN Student s
+    -> ON e.student_id = s.student_id
+    -> JOIN Course c
+    -> ON e.course_id = c.course_id;
++--------------+----------------------------+
+| student_name | course_name                |
++--------------+----------------------------+
+| Rahul        | Database Management System |
+| Rahul        | Python Programming         |
+| Sneha        | Computer Networks          |
+| Kiran        | Database Management System |
+| Kiran        | Python Programming         |
+| Priya        | Digital Electronics        |
+| Arjun        | Thermodynamics             |
++--------------+----------------------------+
+7 rows in set (0.01 sec)
+
+mysql> -- 4. Find students whose attendance is below 75%
+mysql> SELECT student_id,
+    ->        attendance_percent
+    -> FROM Attendance
+    -> WHERE attendance_percent < 75;
++------------+--------------------+
+| student_id | attendance_percent |
++------------+--------------------+
+|          2 |              70.50 |
+|          5 |              68.50 |
++------------+--------------------+
+2 rows in set (0.01 sec)
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+mysql> -- HARD QUERIES
+mysql> -- 1.Find the student with the highest marks
+mysql> SELECT *
+    -> FROM Result
+    -> WHERE marks = (
+    ->     SELECT MAX(marks)
+    ->     FROM Result
+    -> );
++-----------+------------+---------+-------+-------+
+| result_id | student_id | exam_id | marks | grade |
++-----------+------------+---------+-------+-------+
+|       704 |          3 |     601 |    96 | A     |
++-----------+------------+---------+-------+-------+
+1 row in set (0.00 sec)
+
+mysql> -- 2. Find students scoring above the average marks
+mysql> SELECT *
+    -> FROM Result
+    -> WHERE marks > (
+    ->     SELECT AVG(marks)
+    ->     FROM Result
+    -> );
++-----------+------------+---------+-------+-------+
+| result_id | student_id | exam_id | marks | grade |
++-----------+------------+---------+-------+-------+
+|       701 |          1 |     601 |    92 | A     |
+|       702 |          1 |     602 |    88 | A     |
+|       704 |          3 |     601 |    96 | A     |
+|       705 |          3 |     602 |    90 | A     |
++-----------+------------+---------+-------+-------+
+4 rows in set (0.00 sec)
+
+mysql> -- 3.Find students enrolled in more than two courses
+mysql> SELECT student_id,
+    ->        COUNT(course_id) AS Total_Courses
+    -> FROM Enrollment
+    -> GROUP BY student_id
+    -> HAVING COUNT(course_id) > 2;
+Empty set (0.01 sec)
+
+mysql> -- 4.Display student name, course name, and faculty name
+mysql> SELECT s.student_name,
+    ->        c.course_name,
+    ->        f.faculty_name
+    -> FROM Enrollment e
+    -> JOIN Student s
+    -> ON e.student_id = s.student_id
+    -> JOIN Course c
+    -> ON e.course_id = c.course_id
+    -> JOIN Faculty f
+    -> ON c.faculty_id = f.faculty_id;
++--------------+----------------------------+--------------+
+| student_name | course_name                | faculty_name |
++--------------+----------------------------+--------------+
+| Rahul        | Database Management System | Dr. Ramesh   |
+| Kiran        | Database Management System | Dr. Ramesh   |
+| Rahul        | Python Programming         | Dr. Ramesh   |
+| Kiran        | Python Programming         | Dr. Ramesh   |
+| Sneha        | Computer Networks          | Dr. Kavitha  |
+| Priya        | Digital Electronics        | Dr. Mahesh   |
+| Arjun        | Thermodynamics             | Dr. Swathi   |
++--------------+----------------------------+--------------+
+7 rows in set (0.00 sec)
